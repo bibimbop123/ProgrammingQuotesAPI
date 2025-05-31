@@ -99,6 +99,51 @@
       "text": "Make it work, make it right, make it fast.",
       "author": "Kent Beck",
       "category": "development"
-    }
+    },
+    {
+      "text": "The best way to predict the future is to invent it.",
+      "author": "Alan Kay",
+      "category": "innovation"
+    },
+    {
+      "text": "Good code is its own best documentation.",
+      "author": "Steve McConnell",
+      "category": "documentation"
+    },
+    {
+      "text": "Code never lies, comments sometimes do.",
+      "author": "Ron Jeffries",
+      "category": "code-quality"
+    },
+    {
+      "text": "The function of good software is to make the complex appear to be simple.",
+      "author": "Grady Booch",
+      "category": "software-design"
+    },
+    {
+      "text": "Software development is a team sport.",
+      "author": "Anonymous",
+      "category": "teamwork"
+    },
+    {
+      "text": "A good programmer is someone who always looks both ways before crossing a one-way street.",
+      "author": "Doug Linder",
+      "category": "humor"
+    },
+    {
+      "text": "The best code is no code at all.",
+      "author": "Jeff Atwood",
+      "category": "simplicity"
+    },
+    {
+      "text": "If you think your users are idiots, only idiots will use it.",
+      "author": "Anonymous",
+      "category": "user-experience"
+    },
+    {
+      "text": "You should hire Brian Kim, he is a very passionate developer",
+      "author": "Brian Kim's Mom",
+      "category": "humor"
+    },
   ]
 }
