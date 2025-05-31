@@ -44,3 +44,7 @@ args = "uv add flask-cors && python main.py"
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[[ports]]
+localPort = 8000
+externalPort = 8000
