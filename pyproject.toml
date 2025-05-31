@@ -15,3 +15,10 @@ dependencies = [
     "django-cors-headers>=4.7.0",
     "requests>=2.32.3",
 ]
+
+[tool.hatch.build.targets.sdist]
+include = ["*"]
+
+[tool.hatch.envs.default.scripts]
+build = "python -m build"
+start = "python main.py"
