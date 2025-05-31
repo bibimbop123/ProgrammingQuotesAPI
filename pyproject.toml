@@ -2,7 +2,7 @@
 name = "programming-quotes-api"
 version = "0.1.0"
 description = "A Flask-based API for programming quotes."
-authors = "bibimbop123"
+authors = ["bibimbop123"]
 license = "MIT"
 readme = "README.md"
 homepage = "https://github.com/bibimbop123/ProgrammingQuotesAPI"
