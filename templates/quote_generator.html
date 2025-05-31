@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programming Quote Generator</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .quote-card {
+            min-height: 300px;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, var(--bs-dark) 0%, var(--bs-secondary) 100%);
+            border: 2px solid var(--bs-primary);
+        }
+        
+        .quote-text {
+            font-size: 1.5rem;
+            font-style: italic;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .quote-author {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--bs-info);
+        }
+        
+        .quote-category {
+            font-size: 0.9rem;
+            color: var(--bs-warning);
+        }
+        
+        .generate-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+        
+        .category-btn {
+            margin: 0.2rem;
+            transition: all 0.2s ease;
+        }
+        
+        .category-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .loading {
+            opacity: 0.6;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .quote-content {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <!-- Header -->
+        <header class="text-center mb-5">
+            <h1 class="display-4 mb-3">
+                <i class="fas fa-code text-primary me-3"></i>
+                Programming Quote Generator
+                <i class="fas fa-lightbulb text-warning ms-3"></i>
+            </h1>
+            <p class="lead text-muted">
+                Get inspired with authentic programming wisdom from industry legends
+            </p>
+        </header>
+
+        <!-- Main Quote Display -->
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8">
+                <div class="card quote-card">
+                    <div class="card-body d-flex flex-column justify-content-center text-center p-5">
+                        <div id="quoteContent" class="quote-content">
+                            <div class="quote-text" id="quoteText">
+                                Click "Generate Quote" to get your first programming wisdom!
+                            </div>
+                            <div id="quoteAuthor" class="quote-author"></div>
+                            <div id="quoteCategory" class="quote-category"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Generate Buttons -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-6 text-center">
+                <button id="generateBtn" class="btn btn-primary btn-lg generate-btn me-3">
+                    <i class="fas fa-magic me-2"></i>
+                    Generate Random Quote
+                </button>
+                <button id="copyBtn" class="btn btn-outline-secondary btn-lg" style="display: none;">
+                    <i class="fas fa-copy me-2"></i>
+                    Copy Quote
+                </button>
+            </div>
+        </div>
+
+        <!-- Category Selection -->
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-tags me-2"></i>
+                            Generate by Category
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-3">
+                            <p class="text-muted">Choose a specific category for targeted programming wisdom</p>
+                        </div>
+                        <div id="categoriesContainer" class="d-flex flex-wrap justify-content-center">
+                            <div class="text-center w-100">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading categories...</span>
+                                </div>
+                                <p class="mt-2 text-muted">Loading categories...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentQuote = null;
+
+        // DOM Elements
+        const generateBtn = document.getElementById('generateBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const quoteText = document.getElementById('quoteText');
+        const quoteAuthor = document.getElementById('quoteAuthor');
+        const quoteCategory = document.getElementById('quoteCategory');
+        const categoriesContainer = document.getElementById('categoriesContainer');
+
+        // Generate random quote
+        generateBtn.addEventListener('click', async function() {
+            await generateRandomQuote();
+        });
+
+        // Copy quote to clipboard
+        copyBtn.addEventListener('click', function() {
+            if (currentQuote) {
+                const text = `"${currentQuote.quote}" - ${currentQuote.author}`;
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('Quote copied to clipboard!', 'success');
+                });
+            }
+        });
+
+        async function generateRandomQuote() {
+            setLoading(true);
+            try {
+                const response = await fetch('/api/generate-quote');
+                if (response.ok) {
+                    const quote = await response.json();
+                    displayQuote(quote);
+                } else {
+                    showToast('Failed to generate quote. Please try again.', 'error');
+                }
+            } catch (error) {
+                showToast('Error connecting to quote service.', 'error');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        async function generateQuoteByCategory(category) {
+            setLoading(true);
+            try {
+                const response = await fetch(`/api/generate-quote/${category}`);
+                if (response.ok) {
+                    const quote = await response.json();
+                    displayQuote(quote);
+                } else {
+                    showToast(`Failed to generate quote for ${category}.`, 'error');
+                }
+            } catch (error) {
+                showToast('Error connecting to quote service.', 'error');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        function displayQuote(quote) {
+            currentQuote = quote;
+            quoteText.textContent = `"${quote.quote}"`;
+            quoteAuthor.textContent = `— ${quote.author}`;
+            quoteCategory.textContent = `Category: ${quote.category}`;
+            copyBtn.style.display = 'inline-block';
+        }
+
+        function setLoading(loading) {
+            if (loading) {
+                generateBtn.disabled = true;
+                generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generating...';
+                document.getElementById('quoteContent').classList.add('loading');
+            } else {
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = '<i class="fas fa-magic me-2"></i>Generate Random Quote';
+                document.getElementById('quoteContent').classList.remove('loading');
+            }
+        }
+
+        async function loadCategories() {
+            try {
+                const response = await fetch('/api/categories');
+                if (response.ok) {
+                    const data = await response.json();
+                    displayCategories(data.categories);
+                } else {
+                    categoriesContainer.innerHTML = '<p class="text-danger">Failed to load categories</p>';
+                }
+            } catch (error) {
+                categoriesContainer.innerHTML = '<p class="text-danger">Error loading categories</p>';
+            }
+        }
+
+        function displayCategories(categories) {
+            categoriesContainer.innerHTML = '';
+            categories.forEach(category => {
+                const btn = document.createElement('button');
+                btn.className = 'btn btn-outline-info category-btn';
+                btn.textContent = category.replace('-', ' ').toUpperCase();
+                btn.onclick = () => generateQuoteByCategory(category);
+                categoriesContainer.appendChild(btn);
+            });
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
+            toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            toast.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.remove();
+                }
+            }, 3000);
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCategories();
+            generateRandomQuote(); // Load first quote automatically
+        });
+    </script>
+</body>
+</html>
