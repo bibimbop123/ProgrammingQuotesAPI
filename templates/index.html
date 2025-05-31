@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programming Quotes API</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="container py-5">
+        <!-- Header -->
+        <header class="text-center mb-5">
+            <h1 class="display-4 mb-3">
+                <i class="fas fa-quote-left text-primary me-3"></i>
+                Programming Quotes API
+                <i class="fas fa-quote-right text-primary ms-3"></i>
+            </h1>
+            <p class="lead text-muted">
+                A RESTful API serving inspiring programming quotes with multiple endpoints and JSON responses
+            </p>
+        </header>
+
+        <!-- API Endpoints -->
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3 class="card-title mb-0">
+                            <i class="fas fa-cogs me-2"></i>
+                            API Endpoints
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-4">
+                            <!-- Random Quote -->
+                            <div class="col-md-6">
+                                <div class="endpoint-card p-3 border rounded">
+                                    <h5 class="text-primary">
+                                        <i class="fas fa-random me-2"></i>
+                                        Random Quote
+                                    </h5>
+                                    <p class="text-muted mb-2">Get a random programming quote</p>
+                                    <code class="d-block mb-3">GET /api/quotes/random</code>
+                                    <button class="btn btn-outline-primary btn-sm" onclick="testEndpoint('/api/quotes/random')">
+                                        <i class="fas fa-play me-1"></i>
+                                        Test
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- All Quotes -->
+                            <div class="col-md-6">
+                                <div class="endpoint-card p-3 border rounded">
+                                    <h5 class="text-success">
+                                        <i class="fas fa-list me-2"></i>
+                                        All Quotes
+                                    </h5>
+                                    <p class="text-muted mb-2">Get all quotes with pagination</p>
+                                    <code class="d-block mb-3">GET /api/quotes?page=1&per_page=5</code>
+                                    <button class="btn btn-outline-success btn-sm" onclick="testEndpoint('/api/quotes?page=1&per_page=5')">
+                                        <i class="fas fa-play me-1"></i>
+                                        Test
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Categories -->
+                            <div class="col-md-6">
+                                <div class="endpoint-card p-3 border rounded">
+                                    <h5 class="text-info">
+                                        <i class="fas fa-tags me-2"></i>
+                                        Categories
+                                    </h5>
+                                    <p class="text-muted mb-2">Get all available categories</p>
+                                    <code class="d-block mb-3">GET /api/quotes/categories</code>
+                                    <button class="btn btn-outline-info btn-sm" onclick="testEndpoint('/api/quotes/categories')">
+                                        <i class="fas fa-play me-1"></i>
+                                        Test
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Category Filter -->
+                            <div class="col-md-6">
+                                <div class="endpoint-card p-3 border rounded">
+                                    <h5 class="text-warning">
+                                        <i class="fas fa-filter me-2"></i>
+                                        By Category
+                                    </h5>
+                                    <p class="text-muted mb-2">Get quotes by category</p>
+                                    <code class="d-block mb-3">GET /api/quotes/category/humor</code>
+                                    <button class="btn btn-outline-warning btn-sm" onclick="testEndpoint('/api/quotes/category/humor')">
+                                        <i class="fas fa-play me-1"></i>
+                                        Test
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- API Tester -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3 class="card-title mb-0">
+                            <i class="fas fa-flask me-2"></i>
+                            API Tester
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="apiUrl" class="form-label">API Endpoint:</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="apiUrl" placeholder="/api/quotes/random" value="/api/quotes/random">
+                                <button class="btn btn-primary" onclick="testCustomEndpoint()">
+                                    <i class="fas fa-paper-plane me-1"></i>
+                                    Send Request
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Response Display -->
+                        <div id="responseContainer" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="mb-0">Response:</h6>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="copyResponse()">
+                                    <i class="fas fa-copy me-1"></i>
+                                    Copy
+                                </button>
+                            </div>
+                            <pre id="responseOutput" class="bg-dark p-3 rounded text-light"></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documentation -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title mb-0">
+                            <i class="fas fa-book me-2"></i>
+                            Documentation
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Query Parameters</h5>
+                                <ul class="list-unstyled">
+                                    <li><code>page</code> - Page number (default: 1)</li>
+                                    <li><code>per_page</code> - Items per page (1-100, default: 10)</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Response Format</h5>
+                                <p class="text-muted">All responses are in JSON format with proper HTTP status codes.</p>
+                                <ul class="list-unstyled">
+                                    <li><code>200</code> - Success</li>
+                                    <li><code>400</code> - Bad Request</li>
+                                    <li><code>404</code> - Not Found</li>
+                                    <li><code>500</code> - Server Error</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <h5 class="mt-4">Available Categories</h5>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="badge bg-secondary">learning</span>
+                            <span class="badge bg-secondary">programming</span>
+                            <span class="badge bg-secondary">code-quality</span>
+                            <span class="badge bg-secondary">problem-solving</span>
+                            <span class="badge bg-secondary">humor</span>
+                            <span class="badge bg-secondary">technology</span>
+                            <span class="badge bg-secondary">metrics</span>
+                            <span class="badge bg-secondary">software-design</span>
+                            <span class="badge bg-secondary">debugging</span>
+                            <span class="badge bg-secondary">user-experience</span>
+                            <span class="badge bg-secondary">simplicity</span>
+                            <span class="badge bg-secondary">development</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/api-test.js') }}"></script>
+</body>
+</html>
