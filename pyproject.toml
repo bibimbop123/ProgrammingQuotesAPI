@@ -1,21 +1,24 @@
-[project]
+[tool.poetry]
 name = "programming-quotes-api"
 version = "0.1.0"
 description = "A Flask-based API for programming quotes."
-requires-python = ">=3.11"
-dependencies = [
-    "email-validator>=2.2.0",
-    "flask-cors>=6.0.0",
-    "flask>=3.1.1",
-    "flask-sqlalchemy>=3.1.1",
-    "gunicorn>=23.0.0",
-    "psycopg2-binary>=2.9.10",
-    "requests>=2.32.3"
-]
+authors = ["Your Name <your.email@example.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/bibimbop123/ProgrammingQuotesAPI"
+repository = "https://github.com/bibimbop123/ProgrammingQuotesAPI"
+keywords = ["flask", "api", "quotes"]
+python = ">=3.11"
 
-[tool.hatch.build.targets.sdist]
-include = ["*"]
+[tool.poetry.dependencies]
+email-validator = ">=2.2.0"
+flask-cors = ">=6.0.0"
+flask = ">=3.1.1"
+flask-sqlalchemy = ">=3.1.1"
+gunicorn = ">=23.0.0"
+psycopg2-binary = ">=2.9.10"
+requests = ">=2.32.3"
 
-[tool.hatch.envs.default.scripts]
-build = "python -m build"
-start = "python app.py"
+[tool.poetry.scripts]
+build = "python3 -m build" 
+start = "python3 main.py"
